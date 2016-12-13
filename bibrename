@@ -40,7 +40,7 @@ def main():
 def rename_file(ent, pdf):
     if 'author' in ent:
         authors = [
-            biblib.algo.tex_to_unicode(author.pretty(),
+            biblib.algo.tex_to_unicode(author.last,
                                        pos=ent.field_pos['author'])
             for author in ent.authors()]
         if len(authors) == 0:
