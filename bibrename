@@ -32,12 +32,12 @@ def main():
         recoverer = biblib.messages.InputErrorRecoverer()
         for ent in db.values():
             with recoverer:
-                rename_file(ent, args.pdf)
+                rename_file(ent, args.pdf, args.bib)
         recoverer.reraise()
     except biblib.messages.InputError:
         sys.exit(1)
 
-def rename_file(ent, pdf):
+def rename_file(ent, pdf, bib):
     if 'author' in ent:
         authors = [
             biblib.algo.tex_to_unicode(author.last,
@@ -62,6 +62,8 @@ def rename_file(ent, pdf):
 
         if os.path.exists(pdf[0].name):
             shutil.copy2(pdf[0].name, os.getcwd() + '/' +  newname)
+            shutil.move(pdf[0].name, os.path.expanduser("~") + '/.local/share/Trash/files/')
+            shutil.move(bib[0].name, os.path.expanduser("~") + '/.local/share/Trash/files/')
 
 
 if __name__ == '__main__':
