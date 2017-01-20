@@ -4,6 +4,7 @@ import os.path
 
 from biblib import FileBibDB
 
+# FIXME: this is ugly, algo.py and messages.py should be removed
 import algo
 
 import argparse
@@ -50,7 +51,6 @@ def rename_file(entry, pdf, bib, dry_run):
             if not dry_run:
                 shutil.move(pdf, os.path.expanduser("~") + '/.local/share/Trash/files/')
                 shutil.move(bib, os.path.expanduser("~") + '/.local/share/Trash/files/')
-                print ("Files moved")
 
 
 if __name__ == '__main__':
