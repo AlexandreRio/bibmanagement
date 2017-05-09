@@ -12,6 +12,8 @@ import shutil
 import sys
 import re
 
+papers_path = '/Documents/papers/'
+
 def main():
     arg_parser = argparse.ArgumentParser(
         description='Rename a .pdf based on the content of a .bib first entry')
@@ -46,7 +48,7 @@ def rename_file(entry, pdf, bib, dry_run):
         newname = author + ' - ' + '{}'.format(entry['year']) + ' - ' + algo.tex_to_unicode(algo.title_case(entry['title'])).replace("/", " ") + '.pdf'
 
         if os.path.exists(pdf):
-            shutil.copy2(pdf, os.getcwd() + '/' +  newname)
+            shutil.copy2(pdf, os.getcwd() + papers_path +  newname)
 
             if not dry_run:
                 shutil.move(pdf, os.path.expanduser("~") + '/.local/share/Trash/files/')
