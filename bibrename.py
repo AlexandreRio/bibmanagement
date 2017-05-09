@@ -2,7 +2,7 @@
 
 import os.path
 
-from biblib import FileBibDB
+from biblib import FileBibDB, Entry
 
 # FIXME: this is ugly, algo.py and messages.py should be removed
 import algo
@@ -15,6 +15,8 @@ import re
 papers_path = '/Documents/papers/'
 
 def main():
+    # We want to use the file tag
+    Entry.processedTags.append('file')
     arg_parser = argparse.ArgumentParser(
         description='Rename a .pdf based on the content of a .bib first entry')
     arg_parser.add_argument('--bib', required=True, help='.bib file(s) to process',
@@ -28,13 +30,14 @@ def main():
     print (args)
 
     # Load databases
-    db = FileBibDB(args.bib.name, mode='r')
+    db = FileBibDB(args.bib.name, method = 'force', mode = 'w')
 
-    # Print entries
-    # TODO: get entry based on the method (last, key etc)
-    for entry in db.values():
-        rename_file(entry, args.pdf.name, args.bib.name, args.dry_run)
-        break
+    entry = list(db.values())[-1]
+    if rename_file(entry, args.pdf.name, args.bib.name, args.dry_run):
+        for key, value in entry.items():
+            print (str(key) + ">" + str(value))
+        print (db.ckeys)
+        db.add_entry(entry, entry.ckey, method = 'force')
 
 def rename_file(entry, pdf, bib, dry_run):
     if entry['author']:
@@ -48,12 +51,13 @@ def rename_file(entry, pdf, bib, dry_run):
         newname = author + ' - ' + '{}'.format(entry['year']) + ' - ' + algo.tex_to_unicode(algo.title_case(entry['title'])).replace("/", " ") + '.pdf'
 
         if os.path.exists(pdf):
-            shutil.copy2(pdf, os.getcwd() + papers_path +  newname)
+            shutil.copy2(pdf, os.path.expanduser("~") + papers_path +  newname)
+            entry.set_tag('file', ':' + pdf + ':PDF' )
 
             if not dry_run:
                 shutil.move(pdf, os.path.expanduser("~") + '/.local/share/Trash/files/')
-                shutil.move(bib, os.path.expanduser("~") + '/.local/share/Trash/files/')
-
+                return True
+    return False
 
 if __name__ == '__main__':
     main()
