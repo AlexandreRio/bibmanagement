@@ -30,14 +30,14 @@ def main():
     print (args)
 
     # Load databases
-    db = FileBibDB(args.bib.name, method = 'force', mode = 'w')
+    db = FileBibDB(args.bib.name, method = 'force', mode = 'r')
 
     entry = list(db.values())[-1]
     if rename_file(entry, args.pdf.name, args.bib.name, args.dry_run):
         for key, value in entry.items():
             print (str(key) + ">" + str(value))
         print (db.ckeys)
-        db.add_entry(entry, entry.ckey, method = 'force')
+        #db.add_entry(entry, entry.ckey, method = 'force')
 
 def rename_file(entry, pdf, bib, dry_run):
     if entry['author']:
